@@ -5,23 +5,25 @@ import { RouteComponentProps, Link } from 'react-router-dom';
 import * as dataAccess from "../DataAccess/data-access";
 import IChoice from "../Choice/IChoice";
 
-interface IPageState {
+interface IPageEditState {
   text: string;
   storyId: string;
   choices: IChoice[];
-  isEnding: boolean;
 }
 
-interface IPageProps extends RouteComponentProps<any> {
+interface IPageEditProps extends RouteComponentProps<any> {
 }
 
-class Page extends Component<IPageProps, IPageState> {
+class PageEdit extends Component<IPageEditProps, IPageEditState> {
   constructor(props: any) {
     super(props);
-    this.state = { text: "Loading...", storyId: "", choices: [], isEnding: false };
+    this.state = { text: "Loading...", storyId: "", choices: [] };
+
+    this.changeText = this.changeText.bind(this);
+    this.save = this.save.bind(this);
   }
 
-  componentDidUpdate(prevProps: IPageProps, prevState: IPageState, snapshot: any) {
+  componentDidUpdate(prevProps: IPageEditProps, prevState: IPageEditState, snapshot: any) {
     var prevPageId = prevProps.match.params.pageId;
     if (prevPageId !== this.props.match.params.pageId) {
       this.getInfo();
@@ -37,7 +39,7 @@ class Page extends Component<IPageProps, IPageState> {
 
     dataAccess.getPage(pageId)
       .then((data: any) => {
-        this.setState({ text: data.text, storyId: data.storyId, isEnding: data.isEnding });
+        this.setState({ text: data.text, storyId: data.storyId });
       })
       .catch(error => console.log(error));
 
@@ -48,27 +50,29 @@ class Page extends Component<IPageProps, IPageState> {
       .catch(error => console.log(error))
   }
 
+  save() {
+    dataAccess.savePageText(this.props.match.params.pageId, this.state.text)
+      .catch(error => console.log(error));
+  }
+
+  changeText(event: any) { 
+    this.setState({text: event.target.value});
+  } 
+
   render() {
     return (
       <div className="Page">
-        <Markdown options={{ forceBlock: true }}>
-          {this.state.text}
-        </Markdown>
-        {this.state.isEnding ? <p className="theEnd">THE END</p> : ""}
-        <ul className="choices">
-          {this.state.choices.map((choice, index) => (
-            <li key={index}><Link to={`/page/${choice.targetPageId}`}>{choice.text}</Link></li>
-          ))}
-          <li key="beginning"><Link to={`/story/${this.state.storyId}`}>Go back to the beginning of this story</Link></li>
-        </ul>
+        <textarea value={this.state.text} onChange={this.changeText}>
+        </textarea>
+        <button onClick={this.save}>Save</button>
         <div className="footer">
           <span>Page {this.props.match.params.pageId}</span>
           <span>Story {this.state.storyId}</span>
-          <span><Link to={`/page/edit/${this.props.match.params.pageId}`}>Edit this page</Link></span>
+          <span><Link to={`/page/${this.props.match.params.pageId}`}>View this page</Link></span>
         </div>
       </div>
     );
   }
 }
 
-export default Page;
+export default PageEdit;

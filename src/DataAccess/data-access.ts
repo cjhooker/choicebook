@@ -90,6 +90,16 @@ export function getPageChoices(pageId: string) {
       .catch(error => reject("Error getting documents: " + error))
   });
 }
+
+export function savePageText(pageId: string, text: string) {
+  return new Promise((resolve, reject) => {
+    const db = firebase.firestore();
+    var docRef = db.collection("pages").doc(pageId);
+    docRef.set({ text }, { merge: true })
+      .catch(error => reject("Error setting document:" + error))
+  });
+}
+
   // db.collection("pages").add({
     //   text: "Now is the time for **some** good women to come to the aid of their _state_.\n\nThe quick brown dog jumped over the lazy foxes."
     // })
