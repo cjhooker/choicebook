@@ -1,16 +1,11 @@
 import React, { Component } from 'react';
 import './App.css';
-import Story from '../Story/Story';
-import * as firebase from "firebase"
+import * as dataAccess from "../DataAccess/data-access"
 
 class App extends Component<any, any> {
   constructor(props: any) {
     super(props);
-    firebase.initializeApp({
-      apiKey: ' AIzaSyBi2KbEFSMemDyHnYuKnISxWibsrMbx3fE',
-      authDomain: 'choicebook-cjh.firebaseapp.com',
-      projectId: 'choicebook-cjh'
-    });
+    dataAccess.initialize();
   }
 
   render() {

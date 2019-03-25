@@ -1,9 +1,8 @@
 import React, { Component } from 'react';
 import './Story.css';
-import Page from '../Page/Page';
-import * as firebase from "firebase"
 import Markdown from 'markdown-to-jsx';
 import { RouteComponentProps, Link } from 'react-router-dom';
+import * as dataAccess from "../DataAccess/data-access";
 
 interface IStoryState {
   title: string;
@@ -26,47 +25,18 @@ class Story extends Component<IStoryProps, IStoryState> {
 
   getInfo = () => {
     const storyId = this.props.match.params.storyId;
-    const db = firebase.firestore();
-    var docRef = db.collection("stories").doc(storyId);
 
-    // Get the story from firebase
-    docRef.get().then((doc) => {
-      if (doc.exists) {
-        let data = doc.data();
-        console.log("Document data:", doc.data());
-        if (data !== undefined) {
-          this.setState({ title: data.title, description: data.description });
-        }
-      } else {
-        console.log("No such document!");
-      }
-    }).catch(function (error) {
-      console.log("Error getting document:", error);
-    });
+    dataAccess.getStory(storyId)
+      .then((data: any) => {
+        this.setState({ title: data.title, description: data.description });
+      })
+      .catch(error => console.log(error));
 
-    // Get the story's beginning page
-    var pagesRef = db.collection("pages");
-    var query = pagesRef
-      .where("storyId", "==", storyId)
-      .where("isBeginning", "==", true)
-      ;
-
-    query.get().then((querySnapshot) => {
-      if (querySnapshot.size == 0) {
-        console.log("Error: No beginning page");
-        return;
-      }
-
-      if (querySnapshot.size > 1) {
-        console.log("Error: More than one beginning page");
-        return;
-      }
-       
-      this.setState({ beginningPageId: querySnapshot.docs[0].id });
-    })
-    .catch(function (error) {
-      console.log("Error getting documents: ", error);
-    });
+    dataAccess.getBeginningPageId(storyId)
+      .then((beginningPageId: any) => {
+        this.setState({ beginningPageId });
+      })
+      .catch(error => console.log(error));
   }
 
   render() {
@@ -75,7 +45,7 @@ class Story extends Component<IStoryProps, IStoryState> {
         <h1>{this.state.title}</h1>
 
         <Markdown options={{ forceBlock: true }}>{this.state.description}</Markdown>
-        
+
         <div className="choices">
           <Link to={`/page/${this.state.beginningPageId}`}>Start this story</Link>
         </div>

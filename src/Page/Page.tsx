@@ -3,11 +3,8 @@ import './Page.css';
 import * as firebase from "firebase"
 import Markdown from 'markdown-to-jsx';
 import { RouteComponentProps, Link } from 'react-router-dom';
-
-interface IChoice {
-  targetPageId: string;
-  text: string;
-}
+import * as dataAccess from "../DataAccess/data-access";
+import IChoice from "../Choice/IChoice";
 
 interface IPageState {
   text: string;
@@ -37,38 +34,23 @@ class Page extends Component<IPageProps, IPageState> {
 
   getInfo = () => {
     const pageId = this.props.match.params.pageId;
-    const db = firebase.firestore();
-    var docRef = db.collection("pages").doc(pageId);
 
-    // Get the page from firebase
-    docRef.get().then((doc) => {
-      if (doc.exists) {
-        let data = doc.data();
-        if (data !== undefined) {
-          this.setState({ text: data.text, storyId: data.storyId });
-        }
-      } else {
-        console.log("No such document!");
-      }
-    }).catch(function (error) {
-      console.log("Error getting document:", error);
-    });
+    dataAccess.getPage(pageId)
+      .then((data: any) => {
+        this.setState({ text: data.text, storyId: data.storyId });
+      })
+      .catch(error => console.log(error));
 
-    // Get the page's choices from firebase
-    var choicesRef = db.collection("choices");
-    var query = choicesRef.where("sourcePageId", "==", pageId);
-
-    query.get().then((querySnapshot) => {
-      let choices: IChoice[] = querySnapshot.docs.map(doc => {
-        const data = doc.data();
-        let choice = { targetPageId: data.targetPageId, text: data.text } as IChoice;
-        return choice;
-      });
-      this.setState({ choices });
-    })
-      .catch(function (error) {
-        console.log("Error getting documents: ", error);
-      });
+    dataAccess.getPageChoices(pageId)
+      .then((docs: any) => {
+        let choices: IChoice[] = docs.map((doc: any) => {
+          const data = doc.data();
+          let choice = { targetPageId: data.targetPageId, text: data.text } as IChoice;
+          return choice;
+        });
+        this.setState({ choices });
+      })
+      .catch(error => console.log(error))
   }
 
   render() {
