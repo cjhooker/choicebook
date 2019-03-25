@@ -1,4 +1,5 @@
 import * as firebase from "firebase"
+import IChoiceMapper from "./IChoiceMapper";
 
 export function initialize() {
   firebase.initializeApp({
@@ -84,7 +85,7 @@ export function getPageChoices(pageId: string) {
 
     query.get()
       .then((querySnapshot) => {
-        resolve(querySnapshot.docs);
+        resolve(querySnapshot.docs.map(IChoiceMapper));
       })
       .catch(error => reject("Error getting documents: " + error))
   });

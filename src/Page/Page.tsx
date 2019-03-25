@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import './Page.css';
-import * as firebase from "firebase"
 import Markdown from 'markdown-to-jsx';
 import { RouteComponentProps, Link } from 'react-router-dom';
 import * as dataAccess from "../DataAccess/data-access";
@@ -42,12 +41,7 @@ class Page extends Component<IPageProps, IPageState> {
       .catch(error => console.log(error));
 
     dataAccess.getPageChoices(pageId)
-      .then((docs: any) => {
-        let choices: IChoice[] = docs.map((doc: any) => {
-          const data = doc.data();
-          let choice = { targetPageId: data.targetPageId, text: data.text } as IChoice;
-          return choice;
-        });
+      .then((choices: any) => {
         this.setState({ choices });
       })
       .catch(error => console.log(error))
