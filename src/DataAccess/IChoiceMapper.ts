@@ -3,5 +3,5 @@ import * as firebase from "firebase"
 
 export default function IChoiceMapper(doc: firebase.firestore.QueryDocumentSnapshot): IChoice {
   const data = doc.data();
-  return { targetPageId: data.targetPageId, text: data.text } as IChoice;
+  return { choiceId: doc.id, targetPageId: data.targetPageId, text: data.text, wasEdited: false } as IChoice;
 }

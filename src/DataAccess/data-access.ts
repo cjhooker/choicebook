@@ -1,5 +1,6 @@
-import * as firebase from "firebase"
+import * as firebase from "firebase";
 import IChoiceMapper from "./IChoiceMapper";
+import IChoice from "../Choice/IChoice";
 
 export function initialize() {
   firebase.initializeApp({
@@ -98,6 +99,28 @@ export function savePageText(pageId: string, text: string) {
     docRef.set({ text }, { merge: true })
       .then(() => resolve())
       .catch(error => reject("Error setting document:" + error))
+  });
+}
+
+export function saveChoices(choices: IChoice[]) {
+  return new Promise((resolve, reject) => {
+    const db = firebase.firestore();
+    var choicesRef = db.collection("choices");
+    let promises = [];
+    for (let choice of choices) {
+      if (!choice.wasEdited) {
+        continue;
+      }
+
+      let doc = choicesRef.doc(choice.choiceId)
+      promises.push(
+        doc.set({ text: choice.text }, { merge: true})
+      );
+    }
+
+    Promise.all(promises)
+      .then(() => resolve())
+      .catch(error => reject("Error saving choices:" + error))
   });
 }
 

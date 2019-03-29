@@ -4,6 +4,7 @@ import Markdown from 'markdown-to-jsx';
 import { RouteComponentProps, Link } from 'react-router-dom';
 import * as dataAccess from "../DataAccess/data-access";
 import IChoice from "../Choice/IChoice";
+import Choice from "../Choice/Choice";
 
 interface IPageState {
   text: string;
@@ -29,6 +30,7 @@ class Page extends Component<IPageProps, IPageState> {
     this.save = this.save.bind(this);
     this.edit = this.edit.bind(this);
     this.view = this.view.bind(this);
+    this.onChoiceTextEdited = this.onChoiceTextEdited.bind(this);
   }
 
   componentDidUpdate(prevProps: IPageProps, prevState: IPageState, snapshot: any) {
@@ -47,7 +49,9 @@ class Page extends Component<IPageProps, IPageState> {
 
     dataAccess.getPage(pageId)
       .then((data: any) => {
-        this.setState({ text: data.text, storyId: data.storyId, isEnding: data.isEnding });
+        // !!data.isEnding is necessary to coerce undefined into false
+        // Perhaps instead we should make sure isEnding is always set?
+        this.setState({ text: data.text, storyId: data.storyId, isEnding: !!data.isEnding });
       })
       .catch(error => console.log(error));
 
@@ -65,11 +69,16 @@ class Page extends Component<IPageProps, IPageState> {
 
   view() {
     this.setState({ ...this.previousState, isEditMode: false });
-    //this.setState({ isEditMode: false });
   }
 
   save() {
-    dataAccess.savePageText(this.props.match.params.pageId, this.state.text)
+    // TODO: Need to save isEnding value!
+
+    let saveTextPromise = dataAccess.savePageText(this.props.match.params.pageId, this.state.text);
+
+    let saveChoicesPromise = dataAccess.saveChoices(this.state.choices);
+
+    Promise.all([saveTextPromise, saveChoicesPromise])
       .then(() => {
         this.previousState = this.state;
       })
@@ -83,6 +92,13 @@ class Page extends Component<IPageProps, IPageState> {
   changeIsEnding(event: any) {
     this.setState({ isEnding: event.target.checked })
   }
+  
+  onChoiceTextEdited(choiceId: string, newText: string) {
+    const choice = this.state.choices.filter(choice => choice.choiceId == choiceId)[0];
+    choice.text = newText;
+    choice.wasEdited = true;
+    console.log(this.state.choices);
+  }
 
   renderText() {
     if (this.state.isEditMode) {
@@ -90,7 +106,6 @@ class Page extends Component<IPageProps, IPageState> {
         <>
           <textarea value={this.state.text} onChange={this.changeText}></textarea>
           <span><input type="checkbox" checked={this.state.isEnding} onChange={this.changeIsEnding} />Is this page an ending?</span>
-          <button className="save-button" onClick={this.save}>Save</button>
         </>
       )
     } else {
@@ -108,10 +123,18 @@ class Page extends Component<IPageProps, IPageState> {
   renderChoices() {
     return (
       <ul className="choices">
-        {this.state.choices.map((choice, index) => (
-          <li key={index}><Link to={`/page/${choice.targetPageId}`}>{choice.text}</Link></li>
+        {this.state.choices.map((choice) => (
+          <li key={choice.choiceId}>
+            <Choice 
+              choiceId={choice.choiceId} 
+              targetPageId={choice.targetPageId} 
+              text={choice.text}
+              isEditMode={this.state.isEditMode}
+              onTextEdited={this.onChoiceTextEdited}
+            />
+          </li>
         ))}
-        <li key="beginning"><Link to={`/story/${this.state.storyId}`}>Go back to the beginning of this story</Link></li>
+        {this.state.isEditMode ? "" : <li key="beginning"><Link to={`/story/${this.state.storyId}`}>Go back to the beginning of this story</Link></li>}
       </ul>
     )
   }
@@ -121,6 +144,8 @@ class Page extends Component<IPageProps, IPageState> {
       <div className="Page">
         {this.renderText()}
         {this.renderChoices()}
+        {this.state.isEditMode ?
+          <button className="save-button" onClick={this.save}>Save</button> : ""}
         <div className="footer">
           <span>Page {this.props.match.params.pageId}</span>
           <span>Story {this.state.storyId}</span>
