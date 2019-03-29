@@ -96,6 +96,7 @@ export function savePageText(pageId: string, text: string) {
     const db = firebase.firestore();
     var docRef = db.collection("pages").doc(pageId);
     docRef.set({ text }, { merge: true })
+      .then(() => resolve())
       .catch(error => reject("Error setting document:" + error))
   });
 }
