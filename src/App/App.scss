@@ -1,3 +1,5 @@
+$action-color: #2fcefa;
+
 body, html {
   height: 100%;
 }
@@ -5,7 +7,9 @@ body, html {
 body {
   margin: 0;
   padding: 0;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen", "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   background-color: #282c34;
@@ -13,7 +17,7 @@ body {
 }
 
 a {
-  color: #2fcefa;
+  color: $action-color;
   text-decoration: none;
 }
 
@@ -22,8 +26,8 @@ a:hover {
 }
 
 button {
-  background-color: #2fcefa;
-  border: 1px solid #2fcefa;
+  background-color: $action-color;
+  border: 1px solid $action-color;
   color: white;
   /* color: #282c34; */
   padding: 10px 20px;
@@ -35,7 +39,7 @@ button {
 }
 
 button:hover {
-  background-color: #61dafb;
+  background-color: lighten($action-color, 10%); 
 }
 
 h1 {
@@ -48,11 +52,10 @@ h1 {
 
 .footer {
   margin-top: 20px;
-  font-size: 0.8em;
+  font-size: .8em;
 }
 
 .footer span {
   margin-right: 10px;
 }
 
-/*# sourceMappingURL=App.css.map */
