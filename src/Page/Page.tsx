@@ -90,7 +90,7 @@ class Page extends Component<IPageProps, IPageState> {
         <>
           <textarea value={this.state.text} onChange={this.changeText}></textarea>
           <span><input type="checkbox" checked={this.state.isEnding} onChange={this.changeIsEnding} />Is this page an ending?</span>
-          <button onClick={this.save}>Save</button>
+          <button className="save-button" onClick={this.save}>Save</button>
         </>
       )
     } else {
@@ -126,8 +126,8 @@ class Page extends Component<IPageProps, IPageState> {
           <span>Story {this.state.storyId}</span>
           <span>
             {this.state.isEditMode ?
-              <button className="button" onClick={this.view}>View this page</button> :
-              <button className="button" onClick={this.edit}>Edit this page</button>
+              <button className="button small" onClick={this.view}>View this page</button> :
+              <button className="button small" onClick={this.edit}>Edit this page</button>
             }
           </span>
         </div>

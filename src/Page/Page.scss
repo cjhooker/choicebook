@@ -1,12 +1,22 @@
 .Page {
     display: flex;
     flex-direction: column;
-    align-items: left;
-    justify-content: left;
+    align-items: flex-start;
+    justify-content: center;
     font-size: 1em;
     padding-left: 20px;
     padding-right: 20px;
+    padding-top: 20px;
   }
+
+textarea {
+  width: 100%;
+  margin-bottom: 20px;
+}
+
+.save-button {
+  margin-top: 20px;
+}
 
 .theEnd {
   font-weight: bold;
