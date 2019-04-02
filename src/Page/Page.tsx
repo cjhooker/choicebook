@@ -3,7 +3,7 @@ import './Page.css';
 import Markdown from 'markdown-to-jsx';
 import { RouteComponentProps, Link } from 'react-router-dom';
 import * as dataAccess from "../DataAccess/data-access";
-import IChoice from "../Choice/IChoice";
+import IChoice from "../DataAccess/IChoice";
 import Choice from "../Choice/Choice";
 import IPage from '../DataAccess/IPage';
 

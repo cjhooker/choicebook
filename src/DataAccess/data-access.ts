@@ -1,6 +1,5 @@
 import * as firebase from "firebase";
-import IChoiceMapper from "./IChoiceMapper";
-import IChoice from "../Choice/IChoice";
+import IChoice, {MapToChoice} from "./IChoice";
 import IPage, { MapToPage } from "./IPage";
 
 export function initialize() {
@@ -87,7 +86,7 @@ export function getPageChoices(pageId: string) {
 
     query.get()
       .then((querySnapshot) => {
-        resolve(querySnapshot.docs.map(IChoiceMapper));
+        resolve(querySnapshot.docs.map(MapToChoice));
       })
       .catch(error => reject("Error getting documents: " + error))
   });
