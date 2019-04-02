@@ -1,6 +1,7 @@
 import * as firebase from "firebase";
 import IChoiceMapper from "./IChoiceMapper";
 import IChoice from "../Choice/IChoice";
+import IPage, { MapToPage } from "./IPage";
 
 export function initialize() {
   firebase.initializeApp({
@@ -58,7 +59,7 @@ export function getBeginningPageId(storyId: string) {
   });
 }
 
-export function getPage(pageId: string) {
+export function getPage(pageId: string): Promise<IPage> {
   return new Promise((resolve, reject) => {
     const db = firebase.firestore();
     var docRef = db.collection("pages").doc(pageId);
@@ -66,7 +67,7 @@ export function getPage(pageId: string) {
     docRef.get()
       .then((doc) => {
         if (doc.exists) {
-          let data = doc.data();
+          let data = MapToPage(doc);
           if (data !== undefined) {
             resolve(data);
           }

@@ -5,6 +5,7 @@ import { RouteComponentProps, Link } from 'react-router-dom';
 import * as dataAccess from "../DataAccess/data-access";
 import IChoice from "../Choice/IChoice";
 import Choice from "../Choice/Choice";
+import IPage from '../DataAccess/IPage';
 
 interface IPageState {
   text: string;
@@ -48,10 +49,8 @@ class Page extends Component<IPageProps, IPageState> {
     const pageId = this.props.match.params.pageId;
 
     dataAccess.getPage(pageId)
-      .then((data: any) => {
-        // !!data.isEnding is necessary to coerce undefined into false
-        // Perhaps instead we should make sure isEnding is always set?
-        this.setState({ text: data.text, storyId: data.storyId, isEnding: !!data.isEnding });
+      .then((data: IPage) => {
+        this.setState({ text: data.text, storyId: data.storyId, isEnding: data.isEnding });
       })
       .catch(error => console.log(error));
 
