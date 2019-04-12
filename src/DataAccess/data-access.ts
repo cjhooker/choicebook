@@ -1,6 +1,6 @@
 import * as firebase from "firebase";
-import IChoice, {MapToChoice} from "./IChoice";
-import IPage, { MapToPage } from "./IPage";
+import IChoice, {MapToChoice} from "../Domain/IChoice";
+import IPage, { MapToPage } from "../Domain/IPage";
 
 export function initialize() {
   firebase.initializeApp({

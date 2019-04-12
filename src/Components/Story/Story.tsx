@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import './Story.css';
 import Markdown from 'markdown-to-jsx';
 import { RouteComponentProps, Link } from 'react-router-dom';
-import * as dataAccess from "../DataAccess/data-access";
+import * as dataAccess from "../../DataAccess/data-access";
 
 interface IStoryState {
   title: string;
@@ -30,13 +30,13 @@ class Story extends Component<IStoryProps, IStoryState> {
       .then((data: any) => {
         this.setState({ title: data.title, description: data.description });
       })
-      .catch(error => console.log(error));
+      .catch((error: any) => console.log(error));
 
     dataAccess.getBeginningPageId(storyId)
       .then((beginningPageId: any) => {
         this.setState({ beginningPageId });
       })
-      .catch(error => console.log(error));
+      .catch((error: any) => console.log(error));
   }
 
   render() {

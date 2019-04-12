@@ -1,8 +1,8 @@
 import React from 'react'
 import { Redirect, Route, Switch } from 'react-router-dom'
-import App from './App/App'
-import Story from './Story/Story'
-import Page from './Page/Page'
+import App from './Components/App/App'
+import Story from './Components/Story/Story'
+import Page from './Components/Page/Page'
 
 const Routes = () => (
   <App>

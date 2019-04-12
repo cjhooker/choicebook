@@ -2,11 +2,12 @@ import React, { Component } from 'react';
 import './Page.css';
 import Markdown from 'markdown-to-jsx';
 import { RouteComponentProps, Link } from 'react-router-dom';
-import * as dataAccess from "../DataAccess/data-access";
-import IChoice from "../DataAccess/IChoice";
+import * as dataAccess from "../../DataAccess/data-access";
+import IChoice from "../../Domain/IChoice";
 import Choice from "../Choice/Choice";
-import IPage from '../DataAccess/IPage';
+import IPage from '../../Domain/IPage';
 
+// TODO: replace individual properties with IPage
 interface IPageState {
   text: string;
   storyId: string;
@@ -52,13 +53,13 @@ class Page extends Component<IPageProps, IPageState> {
       .then((data: IPage) => {
         this.setState({ text: data.text, storyId: data.storyId, isEnding: data.isEnding });
       })
-      .catch(error => console.log(error));
+      .catch((error: any) => console.log(error));
 
     dataAccess.getPageChoices(pageId)
       .then((choices: any) => {
         this.setState({ choices });
       })
-      .catch(error => console.log(error))
+      .catch((error: any) => console.log(error))
   }
 
   edit() {
