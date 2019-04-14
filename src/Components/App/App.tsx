@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import './App.css';  
-import * as dataAccess from "../../DataAccess/data-access"
+import * as dataAccess from "../../DataAccess/dataAccess"
 
 class App extends Component<any, any> {
   constructor(props: any) {

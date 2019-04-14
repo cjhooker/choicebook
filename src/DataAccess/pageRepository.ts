@@ -1,7 +1,7 @@
 import * as firebase from "firebase";
 import PageData, { MapToPageData } from "./DTOs/PageData";
 
-export function getBeginningPageId(storyId: string) {
+export function getBeginningPageIdForStory(storyId: string) {
   return new Promise((resolve, reject) => {
     const db = firebase.firestore();
     var pagesRef = db.collection("pages");
@@ -56,3 +56,13 @@ export function savePage(page: PageData) {
       .catch(error => reject("Error setting document:" + error))
   });
 }
+
+  // db.collection("pages").add({
+    //   text: "Now is the time for **some** good women to come to the aid of their _state_.\n\nThe quick brown dog jumped over the lazy foxes."
+    // })
+    // .then(function() {
+    //   console.log("Document successfully written!");
+    // })
+    // .catch(function(error) {
+    //   console.error("Error writing document: ", error);
+    // });

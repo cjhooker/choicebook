@@ -2,8 +2,9 @@ import React, { Component } from "react";
 import "./Page.css";
 import Markdown from "markdown-to-jsx";
 import { RouteComponentProps, Link } from "react-router-dom";
-import * as dataAccess from "../../DataAccess/data-access";
+import * as dataAccess from "../../DataAccess/dataAccess";
 import * as pageRepository from "../../DataAccess/pageRepository";
+import * as choiceRepository from "../../DataAccess/choiceRepository";
 import ChoiceData from "../../DataAccess/DTOs/ChoiceData";
 import Choice from "../Choice/Choice";
 import PageData from "../../DataAccess/DTOs/PageData";
@@ -69,8 +70,8 @@ class Page extends Component<PageProps, PageState> {
       })
       .catch((error: any) => console.log(error));
 
-    dataAccess
-      .getPageChoices(pageId)
+    choiceRepository
+      .getChoicesForPage(pageId)
       .then((choices: any) => {
         this.setState({ choices });
       })
@@ -89,7 +90,7 @@ class Page extends Component<PageProps, PageState> {
   save() {
     let saveTextPromise = pageRepository.savePage(this.state.page);
 
-    let saveChoicesPromise = dataAccess.saveChoices(this.state.choices);
+    let saveChoicesPromise = choiceRepository.saveChoices(this.state.choices);
 
     Promise.all([saveTextPromise, saveChoicesPromise])
       .then(() => {

@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import './Story.css';
 import Markdown from 'markdown-to-jsx';
 import { RouteComponentProps, Link } from 'react-router-dom';
-import * as dataAccess from "../../DataAccess/data-access";
+import * as storyRepository from "../../DataAccess/storyRepository";
 import * as pageRepository from "../../DataAccess/pageRepository";
 
 interface StoryState {
@@ -27,13 +27,13 @@ class Story extends Component<StoryProps, StoryState> {
   getInfo = () => {
     const storyId = this.props.match.params.storyId;
 
-    dataAccess.getStory(storyId)
+    storyRepository.getStory(storyId)
       .then((data: any) => {
         this.setState({ title: data.title, description: data.description });
       })
       .catch((error: any) => console.log(error));
 
-    pageRepository.getBeginningPageId(storyId)
+    pageRepository.getBeginningPageIdForStory(storyId)
       .then((beginningPageId: any) => {
         this.setState({ beginningPageId });
       })
