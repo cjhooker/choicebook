@@ -1,23 +1,22 @@
-import React, { Component } from 'react';
-import './Story.css';
-import Markdown from 'markdown-to-jsx';
-import { RouteComponentProps, Link } from 'react-router-dom';
+import React, { Component } from "react";
+import "./Story.css";
+import Markdown from "markdown-to-jsx";
+import { RouteComponentProps, Link } from "react-router-dom";
 import * as storyRepository from "../../DataAccess/storyRepository";
-import * as pageRepository from "../../DataAccess/pageRepository";
+import StoryData from "../../DataAccess/DTOs/StoryData";
 
 interface StoryState {
-  title: string;
-  description: string;
-  beginningPageId: string;
+  story: StoryData;
 }
 
-interface StoryProps extends RouteComponentProps<any> {
-}
+interface StoryProps extends RouteComponentProps<any> {}
 
 class Story extends Component<StoryProps, StoryState> {
   constructor(props: any) {
     super(props);
-    this.state = { beginningPageId: "", title: "Loading...", description: "" };
+    this.state = {
+      story: { storyId: "", beginningPageId: "", title: "Loading...", description: "" }
+    };
   }
 
   componentDidMount() {
@@ -27,28 +26,27 @@ class Story extends Component<StoryProps, StoryState> {
   getInfo = () => {
     const storyId = this.props.match.params.storyId;
 
-    storyRepository.getStory(storyId)
-      .then((data: any) => {
-        this.setState({ title: data.title, description: data.description });
+    storyRepository
+      .getStory(storyId)
+      .then((data: StoryData) => {
+        this.setState({ story: data });
       })
       .catch((error: any) => console.log(error));
-
-    pageRepository.getBeginningPageIdForStory(storyId)
-      .then((beginningPageId: any) => {
-        this.setState({ beginningPageId });
-      })
-      .catch((error: any) => console.log(error));
-  }
+  };
 
   render() {
     return (
       <div className="Story">
-        <h1>{this.state.title}</h1>
+        <h1>{this.state.story.title}</h1>
 
-        <Markdown options={{ forceBlock: true }}>{this.state.description}</Markdown>
+        <Markdown options={{ forceBlock: true }}>
+          {this.state.story.description}
+        </Markdown>
 
         <div className="choices">
-          <Link to={`/page/${this.state.beginningPageId}`}>Start this story</Link>
+          <Link to={`/page/${this.state.story.beginningPageId}`}>
+            Start this story
+          </Link>
         </div>
       </div>
     );

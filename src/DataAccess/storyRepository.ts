@@ -1,6 +1,7 @@
 import * as firebase from "firebase";
+import StoryData, { MapToStoryData } from "./DTOs/StoryData";
 
-export function getStory(storyId: string) {
+export function getStory(storyId: string): Promise<StoryData> {
   return new Promise((resolve, reject) => {
     const db = firebase.firestore();
     var docRef = db.collection("stories").doc(storyId);
@@ -8,7 +9,7 @@ export function getStory(storyId: string) {
     docRef.get()
       .then((doc) => {
         if (doc.exists) {
-          let data = doc.data();
+          let data = MapToStoryData(doc);
           if (data !== undefined) {
             resolve(data);
           } else {
