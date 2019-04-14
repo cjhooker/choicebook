@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import "./Page.css";
+import "./Page.scss";
 import Markdown from "markdown-to-jsx";
 import { RouteComponentProps, Link } from "react-router-dom";
 import * as pageRepository from "../../DataAccess/pageRepository";
@@ -7,11 +7,13 @@ import * as choiceRepository from "../../DataAccess/choiceRepository";
 import ChoiceData from "../../DataAccess/DTOs/ChoiceData";
 import Choice from "../Choice/Choice";
 import PageData from "../../DataAccess/DTOs/PageData";
+import Button from "../UI/Button/Button";
 
 interface PageState {
   page: PageData;
   choices: ChoiceData[];
   isEditMode: boolean;
+  isSaving: boolean;
 }
 
 interface PageProps extends RouteComponentProps<any> {}
@@ -30,7 +32,8 @@ class Page extends Component<PageProps, PageState> {
         isBeginning: false
       } as PageData,
       choices: [],
-      isEditMode: false
+      isEditMode: false,
+      isSaving: false
     };
     this.previousState = this.state;
 
@@ -83,10 +86,12 @@ class Page extends Component<PageProps, PageState> {
   }
 
   view() {
-    this.setState({ ...this.previousState, isEditMode: false });
+    this.setState({ ...this.previousState, isEditMode: false, isSaving: false });
   }
 
   save() {
+    this.setState({ isSaving: true });
+
     let saveTextPromise = pageRepository.savePage(this.state.page);
 
     let saveChoicesPromise = choiceRepository.saveChoices(this.state.choices);
@@ -95,7 +100,8 @@ class Page extends Component<PageProps, PageState> {
       .then(() => {
         this.previousState = this.state;
       })
-      .catch(error => console.log(error));
+      .catch(error => console.log(error))
+      .finally(() => this.setState({ isSaving: false }));
   }
 
   changeText(event: any) {
@@ -114,9 +120,8 @@ class Page extends Component<PageProps, PageState> {
     )[0];
     choice.text = newText;
     choice.wasEdited = true;
-    console.log(this.state.choices);
   }
-  
+
   ViewMode = () => {
     const { storyId, text, isEnding } = this.state.page;
     const { ChoiceList } = this;
@@ -149,9 +154,13 @@ class Page extends Component<PageProps, PageState> {
           Is this page an ending?
         </span>
         <ChoiceList />
-        <button className="save-button" onClick={this.save}>
-          Save
-        </button>
+        <Button
+          className="save-button"
+          onClick={this.save}
+          text="Save"
+          isBusy={this.state.isSaving}
+          isBusyText="Saving..."
+        />
       </>
     );
   };
@@ -183,22 +192,26 @@ class Page extends Component<PageProps, PageState> {
 
     return (
       <div className="footer">
-      <span>Page {pageId}</span>
-      <span>Story {storyId}</span>
-      <span>
-        {isEditMode ? (
-          <button className="button small" onClick={this.view}>
-            View this page
-          </button>
-        ) : (
-          <button className="button small" onClick={this.edit}>
-            Edit this page
-          </button>
-        )}
-      </span>
-    </div>
-    )
-  }
+        <span>Page {pageId}</span>
+        <span>Story {storyId}</span>
+        <span>
+          {isEditMode ? (
+            <Button
+              className="small"
+              onClick={this.view}
+              text="View this page"
+            />
+          ) : (
+            <Button
+              className="small"
+              onClick={this.edit}
+              text="Edit this page"
+            />
+          )}
+        </span>
+      </div>
+    );
+  };
 
   render() {
     const { isEditMode } = this.state;

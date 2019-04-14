@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import "./Story.css";
+import "./Story.scss";
 import Markdown from "markdown-to-jsx";
 import { RouteComponentProps, Link } from "react-router-dom";
 import * as storyRepository from "../../DataAccess/storyRepository";

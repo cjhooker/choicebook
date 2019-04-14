@@ -1,6 +1,6 @@
 import React, { Component, ReactNode } from 'react';
 import { Link } from 'react-router-dom';
-import './Choice.css';
+import './Choice.scss';
 
 interface ChoiceProps {
   choiceId: string;

@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import './App.css';  
+import './App.scss';  
 import * as dataAccess from "../../DataAccess/dataAccess"
 
 class App extends Component<any, any> {
