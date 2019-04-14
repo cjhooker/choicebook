@@ -20,7 +20,7 @@ interface PageState {
 interface PageProps extends RouteComponentProps<any> {}
 
 class Page extends Component<PageProps, PageState> {
-  previousState: {};
+  previousPageData: PageData;
 
   constructor(props: any) {
     super(props);
@@ -37,7 +37,7 @@ class Page extends Component<PageProps, PageState> {
       isSaving: false,
       newChoiceText: ""
     };
-    this.previousState = this.state;
+    this.previousPageData = this.state.page;
 
     this.changeText = this.changeText.bind(this);
     this.changeIsEnding = this.changeIsEnding.bind(this);
@@ -83,16 +83,12 @@ class Page extends Component<PageProps, PageState> {
   };
 
   edit() {
-    this.previousState = this.state;
+    this.previousPageData = this.state.page;
     this.setState({ isEditMode: true });
   }
 
   view() {
-    this.setState({
-      ...this.previousState,
-      isEditMode: false,
-      isSaving: false
-    });
+    this.setState({ page: this.previousPageData, isEditMode: false });
   }
 
   save() {
@@ -104,7 +100,7 @@ class Page extends Component<PageProps, PageState> {
 
     Promise.all([saveTextPromise, saveChoicesPromise])
       .then(() => {
-        this.previousState = this.state;
+        this.previousPageData = this.state.page;
       })
       .catch(error => console.log(error))
       .finally(() => this.setState({ isSaving: false }));

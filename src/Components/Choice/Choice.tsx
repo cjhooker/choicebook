@@ -1,6 +1,6 @@
-import React, { Component, ReactNode } from 'react';
-import { Link } from 'react-router-dom';
-import './Choice.scss';
+import React, { Component, ReactNode } from "react";
+import { Link } from "react-router-dom";
+import "./Choice.scss";
 
 interface ChoiceProps {
   choiceId: string;
@@ -15,7 +15,6 @@ interface ChoiceState {
 }
 
 class Choice extends Component<ChoiceProps, ChoiceState> {
-
   constructor(props: ChoiceProps) {
     super(props);
     this.state = { text: props.text };
@@ -28,26 +27,30 @@ class Choice extends Component<ChoiceProps, ChoiceState> {
     this.props.onTextEdited(this.props.choiceId, event.target.value);
   }
 
-  renderViewMode(): ReactNode {
+  ViewMode = () => {
     return (
       <Link to={`/page/${this.props.targetPageId}`}>{this.props.text}</Link>
-    )
-  }
+    );
+  };
 
   // TODO: Remove a choice
   // TODO: Change where a choice continues to
-  renderEditMode(): ReactNode {
+  EditMode = () => {
     return (
-      <input type="text" className="editChoice" value={this.state.text} onChange={this.editText}></input>
-    )
-  }
+      <input
+        type="text"
+        className="editChoice"
+        value={this.state.text}
+        onChange={this.editText}
+      />
+    );
+  };
 
   render() {
-    if (this.props.isEditMode) {
-      return this.renderEditMode();
-    } else {
-      return this.renderViewMode();
-    }
+    const { ViewMode, EditMode } = this;
+    const { isEditMode } = this.props;
+
+    return <>{isEditMode ? <EditMode /> : <ViewMode />}</>;
   }
 }
 
