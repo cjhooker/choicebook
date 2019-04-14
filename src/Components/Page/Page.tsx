@@ -3,6 +3,7 @@ import "./Page.css";
 import Markdown from "markdown-to-jsx";
 import { RouteComponentProps, Link } from "react-router-dom";
 import * as dataAccess from "../../DataAccess/data-access";
+import * as pageRepository from "../../DataAccess/pageRepository";
 import ChoiceData from "../../DataAccess/DTOs/ChoiceData";
 import Choice from "../Choice/Choice";
 import PageData from "../../DataAccess/DTOs/PageData";
@@ -59,7 +60,7 @@ class Page extends Component<PageProps, PageState> {
   getInfo = () => {
     const pageId = this.props.match.params.pageId;
 
-    dataAccess
+    pageRepository
       .getPage(pageId)
       .then((data: PageData) => {
         this.setState({
@@ -86,7 +87,7 @@ class Page extends Component<PageProps, PageState> {
   }
 
   save() {
-    let saveTextPromise = dataAccess.savePage(this.state.page);
+    let saveTextPromise = pageRepository.savePage(this.state.page);
 
     let saveChoicesPromise = dataAccess.saveChoices(this.state.choices);
 

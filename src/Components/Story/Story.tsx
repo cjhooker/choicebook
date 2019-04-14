@@ -3,6 +3,7 @@ import './Story.css';
 import Markdown from 'markdown-to-jsx';
 import { RouteComponentProps, Link } from 'react-router-dom';
 import * as dataAccess from "../../DataAccess/data-access";
+import * as pageRepository from "../../DataAccess/pageRepository";
 
 interface StoryState {
   title: string;
@@ -32,7 +33,7 @@ class Story extends Component<StoryProps, StoryState> {
       })
       .catch((error: any) => console.log(error));
 
-    dataAccess.getBeginningPageId(storyId)
+    pageRepository.getBeginningPageId(storyId)
       .then((beginningPageId: any) => {
         this.setState({ beginningPageId });
       })
