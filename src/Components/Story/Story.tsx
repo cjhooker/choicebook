@@ -35,16 +35,18 @@ class Story extends Component<StoryProps, StoryState> {
   };
 
   render() {
+    const { title, description, beginningPageId } = this.state.story;
+
     return (
       <div className="Story">
-        <h1>{this.state.story.title}</h1>
+        <h1>{title}</h1>
 
         <Markdown options={{ forceBlock: true }}>
-          {this.state.story.description}
+          {description}
         </Markdown>
 
         <div className="choices">
-          <Link to={`/page/${this.state.story.beginningPageId}`}>
+          <Link to={`/page/${beginningPageId}`}>
             Start this story
           </Link>
         </div>

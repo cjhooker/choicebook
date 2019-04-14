@@ -119,14 +119,17 @@ class Page extends Component<PageProps, PageState> {
   }
 
   renderText() {
-    if (this.state.isEditMode) {
+    const { isEditMode, page } = this.state;
+    const { text, isEnding } = page;
+
+    if (isEditMode) {
       return (
         <>
-          <textarea value={this.state.page.text} onChange={this.changeText} />
+          <textarea value={text} onChange={this.changeText} />
           <span>
             <input
               type="checkbox"
-              checked={this.state.page.isEnding}
+              checked={isEnding}
               onChange={this.changeIsEnding}
             />
             Is this page an ending?
@@ -136,32 +139,37 @@ class Page extends Component<PageProps, PageState> {
     } else {
       return (
         <>
-          <Markdown options={{ forceBlock: true }}>{this.state.page.text}</Markdown>
-          {this.state.page.isEnding ? <p className="theEnd">THE END</p> : ""}
+          <Markdown options={{ forceBlock: true }}>
+            {text}
+          </Markdown>
+          {isEnding ? <p className="theEnd">THE END</p> : ""}
         </>
       );
     }
   }
 
   renderChoices() {
+    const { isEditMode, page, choices } = this.state;
+    const { storyId } = page;
+
     return (
       <ul className="choices">
-        {this.state.choices.map(choice => (
+        {choices.map(choice => (
           <li key={choice.choiceId}>
             <Choice
               choiceId={choice.choiceId}
               targetPageId={choice.targetPageId}
               text={choice.text}
-              isEditMode={this.state.isEditMode}
+              isEditMode={isEditMode}
               onTextEdited={this.onChoiceTextEdited}
             />
           </li>
         ))}
-        {this.state.isEditMode ? (
+        {isEditMode ? (
           ""
         ) : (
           <li key="beginning">
-            <Link to={`/story/${this.state.page.storyId}`}>
+            <Link to={`/story/${storyId}`}>
               Go back to the beginning of this story
             </Link>
           </li>
@@ -171,11 +179,15 @@ class Page extends Component<PageProps, PageState> {
   }
 
   render() {
+    const { isEditMode, page } = this.state;
+    const { storyId } = page;
+    const { pageId } = this.props.match.params;
+
     return (
       <div className="Page">
         {this.renderText()}
         {this.renderChoices()}
-        {this.state.isEditMode ? (
+        {isEditMode ? (
           <button className="save-button" onClick={this.save}>
             Save
           </button>
@@ -183,10 +195,10 @@ class Page extends Component<PageProps, PageState> {
           ""
         )}
         <div className="footer">
-          <span>Page {this.props.match.params.pageId}</span>
-          <span>Story {this.state.page.storyId}</span>
+          <span>Page {pageId}</span>
+          <span>Story {storyId}</span>
           <span>
-            {this.state.isEditMode ? (
+            {isEditMode ? (
               <button className="button small" onClick={this.view}>
                 View this page
               </button>
