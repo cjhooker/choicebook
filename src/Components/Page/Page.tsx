@@ -2,7 +2,6 @@ import React, { Component } from "react";
 import "./Page.css";
 import Markdown from "markdown-to-jsx";
 import { RouteComponentProps, Link } from "react-router-dom";
-import * as dataAccess from "../../DataAccess/dataAccess";
 import * as pageRepository from "../../DataAccess/pageRepository";
 import * as choiceRepository from "../../DataAccess/choiceRepository";
 import ChoiceData from "../../DataAccess/DTOs/ChoiceData";
@@ -117,40 +116,48 @@ class Page extends Component<PageProps, PageState> {
     choice.wasEdited = true;
     console.log(this.state.choices);
   }
+  
+  ViewMode = () => {
+    const { storyId, text, isEnding } = this.state.page;
+    const { ChoiceList } = this;
 
-  renderText() {
-    const { isEditMode, page } = this.state;
-    const { text, isEnding } = page;
+    return (
+      <>
+        <Markdown options={{ forceBlock: true }}>{text}</Markdown>
+        {isEnding ? <p className="theEnd">THE END</p> : ""}
+        <ChoiceList />
+        <Link to={`/story/${storyId}`}>
+          Go back to the beginning of this story
+        </Link>
+      </>
+    );
+  };
 
-    if (isEditMode) {
-      return (
-        <>
-          <textarea value={text} onChange={this.changeText} />
-          <span>
-            <input
-              type="checkbox"
-              checked={isEnding}
-              onChange={this.changeIsEnding}
-            />
-            Is this page an ending?
-          </span>
-        </>
-      );
-    } else {
-      return (
-        <>
-          <Markdown options={{ forceBlock: true }}>
-            {text}
-          </Markdown>
-          {isEnding ? <p className="theEnd">THE END</p> : ""}
-        </>
-      );
-    }
-  }
+  EditMode = () => {
+    const { text, isEnding } = this.state.page;
+    const { ChoiceList } = this;
 
-  renderChoices() {
-    const { isEditMode, page, choices } = this.state;
-    const { storyId } = page;
+    return (
+      <>
+        <textarea value={text} onChange={this.changeText} />
+        <span>
+          <input
+            type="checkbox"
+            checked={isEnding}
+            onChange={this.changeIsEnding}
+          />
+          Is this page an ending?
+        </span>
+        <ChoiceList />
+        <button className="save-button" onClick={this.save}>
+          Save
+        </button>
+      </>
+    );
+  };
+
+  ChoiceList = () => {
+    const { isEditMode, choices } = this.state;
 
     return (
       <ul className="choices">
@@ -165,50 +172,42 @@ class Page extends Component<PageProps, PageState> {
             />
           </li>
         ))}
-        {isEditMode ? (
-          ""
-        ) : (
-          <li key="beginning">
-            <Link to={`/story/${storyId}`}>
-              Go back to the beginning of this story
-            </Link>
-          </li>
-        )}
       </ul>
     );
-  }
+  };
 
-  render() {
-    const { isEditMode, page } = this.state;
-    const { storyId } = page;
+  Footer = () => {
+    const { isEditMode } = this.state;
+    const { storyId } = this.state.page;
     const { pageId } = this.props.match.params;
 
     return (
-      <div className="Page">
-        {this.renderText()}
-        {this.renderChoices()}
+      <div className="footer">
+      <span>Page {pageId}</span>
+      <span>Story {storyId}</span>
+      <span>
         {isEditMode ? (
-          <button className="save-button" onClick={this.save}>
-            Save
+          <button className="button small" onClick={this.view}>
+            View this page
           </button>
         ) : (
-          ""
+          <button className="button small" onClick={this.edit}>
+            Edit this page
+          </button>
         )}
-        <div className="footer">
-          <span>Page {pageId}</span>
-          <span>Story {storyId}</span>
-          <span>
-            {isEditMode ? (
-              <button className="button small" onClick={this.view}>
-                View this page
-              </button>
-            ) : (
-              <button className="button small" onClick={this.edit}>
-                Edit this page
-              </button>
-            )}
-          </span>
-        </div>
+      </span>
+    </div>
+    )
+  }
+
+  render() {
+    const { isEditMode } = this.state;
+    const { EditMode, ViewMode, Footer } = this;
+
+    return (
+      <div className="Page">
+        {isEditMode ? <EditMode /> : <ViewMode />}
+        <Footer />
       </div>
     );
   }
