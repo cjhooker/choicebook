@@ -1,5 +1,5 @@
-import { firestore } from 'firebase';
-type DocumentSnapshot = firestore.DocumentSnapshot
+import { firestore } from "firebase";
+type DocumentSnapshot = firestore.DocumentSnapshot;
 
 export default interface PageData {
   pageId: string;
