@@ -86,12 +86,7 @@ class Page extends Component<PageProps, PageState> {
   }
 
   save() {
-    // TODO: Need to save isEnding value!
-
-    let saveTextPromise = dataAccess.savePageText(
-      this.props.match.params.pageId,
-      this.state.page.text
-    );
+    let saveTextPromise = dataAccess.savePage(this.state.page);
 
     let saveChoicesPromise = dataAccess.saveChoices(this.state.choices);
 
