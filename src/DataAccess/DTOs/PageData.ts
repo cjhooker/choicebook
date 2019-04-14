@@ -1,7 +1,7 @@
 import { firestore } from 'firebase';
 type DocumentSnapshot = firestore.DocumentSnapshot
 
-export default interface IPage {
+export default interface PageData {
   pageId: string;
   storyId: string;
   text: string;
@@ -9,7 +9,7 @@ export default interface IPage {
   isBeginning: boolean;
 }
 
-export function MapToPage(doc: DocumentSnapshot): IPage | undefined {
+export function MapToPageData(doc: DocumentSnapshot): PageData | undefined {
   const data = doc.data();
   if (data === undefined) {
     return undefined;
@@ -20,5 +20,5 @@ export function MapToPage(doc: DocumentSnapshot): IPage | undefined {
     text: data.text,
     isEnding: !!data.isEnding,
     isBeginning: !!data.isBeginning
-  } as IPage;
+  } as PageData;
 }

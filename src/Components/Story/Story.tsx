@@ -4,16 +4,16 @@ import Markdown from 'markdown-to-jsx';
 import { RouteComponentProps, Link } from 'react-router-dom';
 import * as dataAccess from "../../DataAccess/data-access";
 
-interface IStoryState {
+interface StoryState {
   title: string;
   description: string;
   beginningPageId: string;
 }
 
-interface IStoryProps extends RouteComponentProps<any> {
+interface StoryProps extends RouteComponentProps<any> {
 }
 
-class Story extends Component<IStoryProps, IStoryState> {
+class Story extends Component<StoryProps, StoryState> {
   constructor(props: any) {
     super(props);
     this.state = { beginningPageId: "", title: "Loading...", description: "" };

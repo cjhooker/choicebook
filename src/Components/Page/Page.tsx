@@ -3,23 +3,23 @@ import './Page.css';
 import Markdown from 'markdown-to-jsx';
 import { RouteComponentProps, Link } from 'react-router-dom';
 import * as dataAccess from "../../DataAccess/data-access";
-import IChoice from "../../Domain/IChoice";
+import ChoiceData from "../../DataAccess/DTOs/ChoiceData";
 import Choice from "../Choice/Choice";
-import IPage from '../../Domain/IPage';
+import PageData from '../../DataAccess/DTOs/PageData';
 
 // TODO: replace individual properties with IPage
-interface IPageState {
+interface PageState {
   text: string;
   storyId: string;
-  choices: IChoice[];
+  choices: ChoiceData[];
   isEnding: boolean;
   isEditMode: boolean;
 }
 
-interface IPageProps extends RouteComponentProps<any> {
+interface PageProps extends RouteComponentProps<any> {
 }
 
-class Page extends Component<IPageProps, IPageState> {
+class Page extends Component<PageProps, PageState> {
   previousState: {}
 
   constructor(props: any) {
@@ -35,7 +35,7 @@ class Page extends Component<IPageProps, IPageState> {
     this.onChoiceTextEdited = this.onChoiceTextEdited.bind(this);
   }
 
-  componentDidUpdate(prevProps: IPageProps, prevState: IPageState, snapshot: any) {
+  componentDidUpdate(prevProps: PageProps, prevState: PageState, snapshot: any) {
     var prevPageId = prevProps.match.params.pageId;
     if (prevPageId !== this.props.match.params.pageId) {
       this.getInfo();
@@ -50,7 +50,7 @@ class Page extends Component<IPageProps, IPageState> {
     const pageId = this.props.match.params.pageId;
 
     dataAccess.getPage(pageId)
-      .then((data: IPage) => {
+      .then((data: PageData) => {
         this.setState({ text: data.text, storyId: data.storyId, isEnding: data.isEnding });
       })
       .catch((error: any) => console.log(error));

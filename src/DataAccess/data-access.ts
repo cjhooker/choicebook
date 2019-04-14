@@ -1,6 +1,6 @@
 import * as firebase from "firebase";
-import IChoice, {MapToChoice} from "../Domain/IChoice";
-import IPage, { MapToPage } from "../Domain/IPage";
+import ChoiceData, {MapToChoiceData} from "./DTOs/ChoiceData";
+import PageData, { MapToPageData } from "./DTOs/PageData";
 
 export function initialize() {
   firebase.initializeApp({
@@ -58,7 +58,7 @@ export function getBeginningPageId(storyId: string) {
   });
 }
 
-export function getPage(pageId: string): Promise<IPage> {
+export function getPage(pageId: string): Promise<PageData> {
   return new Promise((resolve, reject) => {
     const db = firebase.firestore();
     var docRef = db.collection("pages").doc(pageId);
@@ -66,7 +66,7 @@ export function getPage(pageId: string): Promise<IPage> {
     docRef.get()
       .then((doc) => {
         if (doc.exists) {
-          let data = MapToPage(doc);
+          let data = MapToPageData(doc);
           if (data !== undefined) {
             resolve(data);
           }
@@ -86,7 +86,7 @@ export function getPageChoices(pageId: string) {
 
     query.get()
       .then((querySnapshot) => {
-        resolve(querySnapshot.docs.map(MapToChoice));
+        resolve(querySnapshot.docs.map(MapToChoiceData));
       })
       .catch(error => reject("Error getting documents: " + error))
   });
@@ -102,7 +102,7 @@ export function savePageText(pageId: string, text: string) {
   });
 }
 
-export function saveChoices(choices: IChoice[]) {
+export function saveChoices(choices: ChoiceData[]) {
   return new Promise((resolve, reject) => {
     const db = firebase.firestore();
     var choicesRef = db.collection("choices");

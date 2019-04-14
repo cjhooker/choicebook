@@ -2,7 +2,7 @@ import React, { Component, ReactNode } from 'react';
 import { Link } from 'react-router-dom';
 import './Choice.css';
 
-interface IChoiceProps {
+interface ChoiceProps {
   choiceId: string;
   targetPageId: string;
   text: string;
@@ -10,13 +10,13 @@ interface IChoiceProps {
   onTextEdited: Function;
 }
 
-interface IChoiceState {
+interface ChoiceState {
   text: string;
 }
 
-class Choice extends Component<IChoiceProps, IChoiceState> {
+class Choice extends Component<ChoiceProps, ChoiceState> {
 
-  constructor(props: IChoiceProps) {
+  constructor(props: ChoiceProps) {
     super(props);
     this.state = { text: props.text };
 
