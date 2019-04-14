@@ -34,9 +34,11 @@ class Choice extends Component<ChoiceProps, ChoiceState> {
     )
   }
 
+  // TODO: Remove a choice
+  // TODO: Change where a choice continues to
   renderEditMode(): ReactNode {
     return (
-      <input type="text" className="edit-choice" value={this.state.text} onChange={this.editText}></input>
+      <input type="text" className="editChoice" value={this.state.text} onChange={this.editText}></input>
     )
   }
 

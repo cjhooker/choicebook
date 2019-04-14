@@ -3,7 +3,7 @@ import "./Button.scss";
 
 interface ButtonProps {
   onClick: () => void;
-  className: string;
+  className?: string;
   text: string;
   isBusy: boolean;
   isBusyText: string;

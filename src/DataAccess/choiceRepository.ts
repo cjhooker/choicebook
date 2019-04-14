@@ -36,3 +36,15 @@ export function saveChoices(choices: ChoiceData[]) {
       .catch(error => reject("Error saving choices:" + error))
   });
 }
+
+// Returns the id of the added choice
+export function addChoice(choice: ChoiceData): Promise<string> {
+  return new Promise((resolve, reject) => {
+    const db = firebase.firestore();
+    var choicesRef = db.collection("choices");
+
+    choicesRef.add(choice)
+      .then((doc) => resolve(doc.id))
+      .catch(error => reject("Error adding choice:" + error));
+  });
+}

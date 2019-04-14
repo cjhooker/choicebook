@@ -1,9 +1,11 @@
+@import "../../variables.scss";
+
 .Page {
     display: flex;
     flex-direction: column;
     align-items: flex-start;
     justify-content: center;
-    font-size: 1em;
+    font-size: $normal-font-size;
     padding-left: 20px;
     padding-right: 20px;
     padding-top: 20px;
@@ -14,9 +16,13 @@ textarea {
   margin-bottom: 20px;
 }
 
-.save-button {
+.saveButton {
   margin-top: 20px;
   width: 100px;
+}
+
+.newChoiceButton {
+  margin-left: 10px;
 }
 
 .theEnd {

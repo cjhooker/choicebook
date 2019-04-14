@@ -1,9 +1,11 @@
+@import "../../variables.scss";
+
 .Story {
     display: flex;
     flex-direction: column;
     align-items: left;
     justify-content: left;
-    font-size: 1em;
+    font-size: $normal-font-size;
     padding-left: 20px;
     padding-right: 20px;
   }

@@ -14,6 +14,7 @@ interface PageState {
   choices: ChoiceData[];
   isEditMode: boolean;
   isSaving: boolean;
+  newChoiceText: string;
 }
 
 interface PageProps extends RouteComponentProps<any> {}
@@ -33,7 +34,8 @@ class Page extends Component<PageProps, PageState> {
       } as PageData,
       choices: [],
       isEditMode: false,
-      isSaving: false
+      isSaving: false,
+      newChoiceText: ""
     };
     this.previousState = this.state;
 
@@ -86,7 +88,11 @@ class Page extends Component<PageProps, PageState> {
   }
 
   view() {
-    this.setState({ ...this.previousState, isEditMode: false, isSaving: false });
+    this.setState({
+      ...this.previousState,
+      isEditMode: false,
+      isSaving: false
+    });
   }
 
   save() {
@@ -103,6 +109,25 @@ class Page extends Component<PageProps, PageState> {
       .catch(error => console.log(error))
       .finally(() => this.setState({ isSaving: false }));
   }
+
+  addChoice = () => {
+    let choice = {
+      sourcePageId: this.state.page.pageId,
+      text: this.state.newChoiceText
+    } as ChoiceData;
+
+    choiceRepository.addChoice(choice).then((choiceId: string) => {
+      choice.choiceId = choiceId;
+      this.setState({
+        choices: [...this.state.choices, choice],
+        newChoiceText: ""
+      });
+    });
+  };
+
+  editNewChoiceText = (event: any) => {
+    this.setState({ newChoiceText: event.target.value });
+  };
 
   changeText(event: any) {
     this.setState({ page: { ...this.state.page, text: event.target.value } });
@@ -155,7 +180,7 @@ class Page extends Component<PageProps, PageState> {
         </span>
         <ChoiceList />
         <Button
-          className="save-button"
+          className="saveButton"
           onClick={this.save}
           text="Save"
           isBusy={this.state.isSaving}
@@ -165,6 +190,7 @@ class Page extends Component<PageProps, PageState> {
     );
   };
 
+  // TODO: Specify where a new choice continues to
   ChoiceList = () => {
     const { isEditMode, choices } = this.state;
 
@@ -181,6 +207,23 @@ class Page extends Component<PageProps, PageState> {
             />
           </li>
         ))}
+        {isEditMode ? (
+          <li key="new">
+            <input
+              type="text"
+              className="editChoice"
+              value={this.state.newChoiceText}
+              onChange={this.editNewChoiceText}
+            />
+            <Button
+              text="Add a new choice"
+              className="small newChoiceButton"
+              onClick={this.addChoice}
+            />
+          </li>
+        ) : (
+          ""
+        )}
       </ul>
     );
   };
