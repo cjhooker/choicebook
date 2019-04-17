@@ -6,7 +6,6 @@ export default interface ChoiceData {
   sourcePageId: string;
   targetPageId: string;
   text: string;
-  wasEdited: boolean;
 }
 
 export function MapToChoiceData(doc: QueryDocumentSnapshot): ChoiceData {
@@ -15,7 +14,6 @@ export function MapToChoiceData(doc: QueryDocumentSnapshot): ChoiceData {
     choiceId: doc.id,
     sourcePageId: data.sourcePageId,
     targetPageId: data.targetPageId,
-    text: data.text,
-    wasEdited: false
+    text: data.text
   } as ChoiceData;
 }

@@ -8,10 +8,13 @@ import ChoiceData from "../../DataAccess/DTOs/ChoiceData";
 import Choice from "../Choice/Choice";
 import PageData from "../../DataAccess/DTOs/PageData";
 import Button from "../UI/Button/Button";
+import ChoiceCollection, {
+  ChoiceStatus
+} from "../../DataAccess/DTOs/ChoiceCollection";
 
 interface PageState {
   page: PageData;
-  choices: ChoiceData[];
+  choices: ChoiceCollection;
   isEditMode: boolean;
   isSaving: boolean;
   newChoiceText: string;
@@ -32,7 +35,7 @@ class Page extends Component<PageProps, PageState> {
         isEnding: false,
         isBeginning: false
       } as PageData,
-      choices: [],
+      choices: new ChoiceCollection([]),
       isEditMode: false,
       isSaving: false,
       newChoiceText: ""
@@ -76,8 +79,8 @@ class Page extends Component<PageProps, PageState> {
 
     choiceRepository
       .getChoicesForPage(pageId)
-      .then((choices: any) => {
-        this.setState({ choices });
+      .then((choices: ChoiceData[]) => {
+        this.setState({ choices: ChoiceCollection.fromChoiceData(choices) });
       })
       .catch((error: any) => console.log(error));
   };
@@ -96,7 +99,9 @@ class Page extends Component<PageProps, PageState> {
 
     let saveTextPromise = pageRepository.savePage(this.state.page);
 
-    let saveChoicesPromise = choiceRepository.saveChoices(this.state.choices);
+    let saveChoicesPromise = choiceRepository
+      .saveChoices(this.state.choices)
+      .then(choices => this.setState({ choices }));
 
     Promise.all([saveTextPromise, saveChoicesPromise])
       .then(() => {
@@ -107,18 +112,14 @@ class Page extends Component<PageProps, PageState> {
   }
 
   addChoice = () => {
+    const { choices, page, newChoiceText } = this.state;
+
     let choice = {
-      sourcePageId: this.state.page.pageId,
-      text: this.state.newChoiceText
+      sourcePageId: page.pageId,
+      text: newChoiceText
     } as ChoiceData;
 
-    choiceRepository.addChoice(choice).then((choiceId: string) => {
-      choice.choiceId = choiceId;
-      this.setState({
-        choices: [...this.state.choices, choice],
-        newChoiceText: ""
-      });
-    });
+    this.setState({ choices: choices.add(choice), newChoiceText: "" });
   };
 
   editNewChoiceText = (event: any) => {
@@ -136,12 +137,15 @@ class Page extends Component<PageProps, PageState> {
   }
 
   onChoiceTextEdited(choiceId: string, newText: string) {
-    const choice = this.state.choices.filter(
-      choice => choice.choiceId == choiceId
-    )[0];
+    const choice = this.state.choices.getChoiceData(choiceId);
     choice.text = newText;
-    choice.wasEdited = true;
+
+    this.setState({ choices: this.state.choices.update(choice) });
   }
+
+  onChoiceDeleted = (choiceId: string) => {
+    this.setState({ choices: this.state.choices.delete(choiceId) });
+  };
 
   ViewMode = () => {
     const { storyId, text, isEnding } = this.state.page;
@@ -188,7 +192,8 @@ class Page extends Component<PageProps, PageState> {
 
   // TODO: Specify where a new choice continues to
   ChoiceList = () => {
-    const { isEditMode, choices } = this.state;
+    const { isEditMode } = this.state;
+    const choices = this.state.choices.getUndeleted();
 
     return (
       <ul className="choices">
@@ -200,6 +205,7 @@ class Page extends Component<PageProps, PageState> {
               text={choice.text}
               isEditMode={isEditMode}
               onTextEdited={this.onChoiceTextEdited}
+              onChoiceDeleted={this.onChoiceDeleted}
             />
           </li>
         ))}

@@ -1,6 +1,7 @@
 import React, { Component, ReactNode } from "react";
 import { Link } from "react-router-dom";
 import "./Choice.scss";
+import Button from "../UI/Button/Button";
 
 interface ChoiceProps {
   choiceId: string;
@@ -8,6 +9,7 @@ interface ChoiceProps {
   text: string;
   isEditMode: boolean;
   onTextEdited: Function;
+  onChoiceDeleted: Function;
 }
 
 interface ChoiceState {
@@ -27,22 +29,32 @@ class Choice extends Component<ChoiceProps, ChoiceState> {
     this.props.onTextEdited(this.props.choiceId, event.target.value);
   }
 
+  delete = () => {
+    this.props.onChoiceDeleted(this.props.choiceId);
+  }
+
   ViewMode = () => {
     return (
       <Link to={`/page/${this.props.targetPageId}`}>{this.props.text}</Link>
     );
   };
 
-  // TODO: Remove a choice
   // TODO: Change where a choice continues to
   EditMode = () => {
     return (
-      <input
-        type="text"
-        className="editChoice"
-        value={this.state.text}
-        onChange={this.editText}
-      />
+      <>
+        <input
+          type="text"
+          className="editChoice"
+          value={this.state.text}
+          onChange={this.editText}
+        />
+        <Button
+          text="Delete"
+          className="small deleteButton"
+          onClick={this.delete}
+        />
+      </>
     );
   };
 
