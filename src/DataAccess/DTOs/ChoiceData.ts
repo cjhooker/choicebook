@@ -17,3 +17,16 @@ export function MapToChoiceData(doc: QueryDocumentSnapshot): ChoiceData {
     text: data.text
   } as ChoiceData;
 }
+
+export function MapFromChoiceData(data: ChoiceData): Object {
+  let firebaseData: any = {
+    sourcePageId: data.sourcePageId,
+    text: data.text
+  };
+
+  if (data.targetPageId !== undefined) {
+    firebaseData.targetPageId = data.targetPageId;
+  }
+
+  return firebaseData;
+}

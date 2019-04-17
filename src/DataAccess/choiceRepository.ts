@@ -1,5 +1,5 @@
 import * as firebase from "firebase";
-import ChoiceData, { MapToChoiceData } from "./DTOs/ChoiceData";
+import ChoiceData, { MapToChoiceData, MapFromChoiceData } from "./DTOs/ChoiceData";
 import ChoiceCollection, { ChoiceStatus } from "./DTOs/ChoiceCollection";
 
 export function getChoicesForPage(pageId: string): Promise<ChoiceData[]> {
@@ -56,7 +56,7 @@ export function addChoice(choice: ChoiceData): Promise<string> {
     var choicesRef = db.collection("choices");
 
     choicesRef
-      .add(choice)
+      .add(MapFromChoiceData(choice))
       .then(doc => resolve(doc.id))
       .catch(error => reject("Error adding choice:" + error));
   });

@@ -25,11 +25,12 @@ class ChoiceCollection {
     );
   }
 
-  add = (data: ChoiceData) => {
+  add = (data: Partial<ChoiceData>) => {
     data.choiceId = `Added_${this._choices.length}`;
+
     this._choices = [
       ...this._choices,
-      ChoiceCollection.choiceFromChoiceData(data, ChoiceStatus.Added)
+      ChoiceCollection.choiceFromChoiceData(data as ChoiceData, ChoiceStatus.Added)
     ];
 
     return new ChoiceCollection(this._choices);

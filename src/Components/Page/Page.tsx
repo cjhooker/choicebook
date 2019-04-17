@@ -114,10 +114,10 @@ class Page extends Component<PageProps, PageState> {
   addChoice = () => {
     const { choices, page, newChoiceText } = this.state;
 
-    let choice = {
-      sourcePageId: page.pageId,
+    let choice: Partial<ChoiceData> = {
+      sourcePageId: page.pageId, 
       text: newChoiceText
-    } as ChoiceData;
+    };
 
     this.setState({ choices: choices.add(choice), newChoiceText: "" });
   };
