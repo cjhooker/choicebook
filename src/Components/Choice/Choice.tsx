@@ -31,16 +31,28 @@ class Choice extends Component<ChoiceProps, ChoiceState> {
 
   delete = () => {
     this.props.onChoiceDeleted(this.props.choiceId);
-  }
+  };
 
   ViewMode = () => {
+    const { targetPageId, text } = this.props;
+
     return (
-      <Link to={`/page/${this.props.targetPageId}`}>{this.props.text}</Link>
+      <>
+        {targetPageId !== undefined ? (
+          <Link to={`/page/${targetPageId}`}>{text}</Link>
+        ) : (
+          <span>{text}</span>
+        )}
+      </>
     );
   };
 
   // TODO: Change where a choice continues to
+  //       Need to store a list of all pages in current story
+  //       Should be loaded once for the story and stored in state
   EditMode = () => {
+    const { targetPageId } = this.props;
+
     return (
       <>
         <input
@@ -49,6 +61,8 @@ class Choice extends Component<ChoiceProps, ChoiceState> {
           value={this.state.text}
           onChange={this.editText}
         />
+        =>
+        <span>{targetPageId === undefined ? "NOWHERE" : targetPageId}</span>
         <Button
           text="Delete"
           className="small deleteButton"
