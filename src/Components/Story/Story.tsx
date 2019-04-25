@@ -3,12 +3,14 @@ import "./Story.scss";
 import Markdown from "markdown-to-jsx";
 import { RouteComponentProps, Link } from "react-router-dom";
 import * as storyRepository from "../../DataAccess/storyRepository";
+import * as pageRepository from "../../DataAccess/pageRepository";
 import StoryData from "../../DataAccess/DTOs/StoryData";
 import Page from "../Page/Page";
 import StoryContext from "./StoryContext";
 
 interface StoryState {
   story: StoryData;
+  pageIds: string[];
 }
 
 interface StoryProps extends RouteComponentProps<any> {}
@@ -22,7 +24,8 @@ class Story extends Component<StoryProps, StoryState> {
         beginningPageId: "",
         title: "Loading...",
         description: ""
-      }
+      },
+      pageIds: []
     };
   }
 
@@ -37,6 +40,13 @@ class Story extends Component<StoryProps, StoryState> {
       .getStory(storyId)
       .then((data: StoryData) => {
         this.setState({ story: data });
+      })
+      .catch((error: any) => console.log(error));
+
+    pageRepository
+      .getPageIdsForStory(storyId)
+      .then((data: string[]) => {
+        this.setState({ pageIds: data });
       })
       .catch((error: any) => console.log(error));
   };
@@ -62,10 +72,11 @@ class Story extends Component<StoryProps, StoryState> {
 
   render() {
     const { StoryIntro } = this;
-    const { pageId, storyId } = this.props.match.params;
+    const { pageId } = this.props.match.params;
+    const { story, pageIds } = this.state;
 
     return (
-      <StoryContext.Provider value={{ story: this.state.story }}>
+      <StoryContext.Provider value={{ story, pageIds }}>
         {pageId === undefined ? <StoryIntro /> : <Page pageId={pageId} />}
       </StoryContext.Provider>
     );

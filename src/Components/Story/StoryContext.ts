@@ -3,6 +3,7 @@ import StoryData from "../../DataAccess/DTOs/StoryData";
 
 interface StoryContext {
   story: StoryData;
+  pageIds: string[];
 }
 
 const storyContext = React.createContext<StoryContext>({
@@ -11,7 +12,8 @@ const storyContext = React.createContext<StoryContext>({
     beginningPageId: "",
     title: "",
     description: ""
-  }
+  },
+  pageIds: []
 });
 
 export default storyContext;

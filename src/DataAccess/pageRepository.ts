@@ -21,6 +21,21 @@ export function getPage(pageId: string): Promise<PageData> {
   });
 }
 
+export function getPageIdsForStory(storyId: string): Promise<string[]> {
+  return new Promise((resolve, reject) => {
+    const db = firebase.firestore();
+    var pagesRef = db.collection("pages");
+    var query = pagesRef.where("storyId", "==", storyId);
+
+    query
+    .get()
+    .then(querySnapshot => {
+      resolve(querySnapshot.docs.map(doc => doc.id));
+    })
+    .catch(error => reject("Error getting documents: " + error));
+  });
+}
+
 export function savePage(page: PageData) {
   return new Promise((resolve, reject) => {
     const db = firebase.firestore();

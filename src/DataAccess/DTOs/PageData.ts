@@ -1,5 +1,6 @@
 import { firestore } from "firebase";
 type DocumentSnapshot = firestore.DocumentSnapshot;
+type QueryDocumentSnapshot = firestore.QueryDocumentSnapshot;
 
 export default interface PageData {
   pageId: string;
@@ -22,3 +23,4 @@ export function MapToPageData(doc: DocumentSnapshot): PageData | undefined {
     isBeginning: !!data.isBeginning
   } as PageData;
 }
+
