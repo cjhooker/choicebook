@@ -2,6 +2,7 @@ import React, { Component, ReactNode } from "react";
 import { Link } from "react-router-dom";
 import "./Choice.scss";
 import Button from "../UI/Button/Button";
+import StoryContext from "../Story/StoryContext";
 
 interface ChoiceProps {
   choiceId: string;
@@ -17,6 +18,9 @@ interface ChoiceState {
 }
 
 class Choice extends Component<ChoiceProps, ChoiceState> {
+  static contextType = StoryContext;
+  context!: React.ContextType<typeof StoryContext>
+
   constructor(props: ChoiceProps) {
     super(props);
     this.state = { text: props.text };
@@ -39,7 +43,7 @@ class Choice extends Component<ChoiceProps, ChoiceState> {
     return (
       <>
         {targetPageId !== undefined ? (
-          <Link to={`/page/${targetPageId}`}>{text}</Link>
+          <Link to={`/story/${this.context.story.storyId}/${targetPageId}`}>{text}</Link>
         ) : (
           <span>{text}</span>
         )}
@@ -75,7 +79,7 @@ class Choice extends Component<ChoiceProps, ChoiceState> {
   render() {
     const { ViewMode, EditMode } = this;
     const { isEditMode } = this.props;
-
+    
     return <>{isEditMode ? <EditMode /> : <ViewMode />}</>;
   }
 }

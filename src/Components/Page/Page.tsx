@@ -11,6 +11,7 @@ import Button from "../UI/Button/Button";
 import ChoiceCollection, {
   ChoiceStatus
 } from "../../DataAccess/DTOs/ChoiceCollection";
+import StoryContext from "../Story/StoryContext";
 
 interface PageState {
   page: PageData;
@@ -20,13 +21,19 @@ interface PageState {
   newChoiceText: string;
 }
 
-interface PageProps extends RouteComponentProps<any> {}
+interface PageProps {
+  pageId: string;
+}
 
 class Page extends Component<PageProps, PageState> {
   previousPageData: PageData;
 
+  static contextType = StoryContext;
+  context!: React.ContextType<typeof StoryContext>
+
   constructor(props: any) {
     super(props);
+
     this.state = {
       page: {
         pageId: "",
@@ -55,8 +62,8 @@ class Page extends Component<PageProps, PageState> {
     prevState: PageState,
     snapshot: any
   ) {
-    var prevPageId = prevProps.match.params.pageId;
-    if (prevPageId !== this.props.match.params.pageId) {
+    var prevPageId = prevProps.pageId;
+    if (prevPageId !== this.props.pageId) {
       this.getInfo();
     }
   }
@@ -66,7 +73,7 @@ class Page extends Component<PageProps, PageState> {
   }
 
   getInfo = () => {
-    const pageId = this.props.match.params.pageId;
+    const pageId = this.props.pageId;
 
     pageRepository
       .getPage(pageId)
@@ -87,7 +94,7 @@ class Page extends Component<PageProps, PageState> {
 
   edit() {
     this.previousPageData = this.state.page;
-    this.setState({ isEditMode: true });
+    this.setState({ isEditMode: true }); 
   }
 
   view() {
@@ -233,12 +240,13 @@ class Page extends Component<PageProps, PageState> {
   Footer = () => {
     const { isEditMode } = this.state;
     const { storyId } = this.state.page;
-    const { pageId } = this.props.match.params;
+    const { pageId } = this.props;
 
     return (
       <div className="footer">
+        <span>{this.context.story.title} ({storyId}) </span>
         <span>Page {pageId}</span>
-        <span>Story {storyId}</span>
+
         <span>
           {isEditMode ? (
             <Button
@@ -258,7 +266,7 @@ class Page extends Component<PageProps, PageState> {
     );
   };
 
-  render() {
+  render = () => {
     const { isEditMode } = this.state;
     const { EditMode, ViewMode, Footer } = this;
 

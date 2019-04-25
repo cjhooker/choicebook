@@ -4,6 +4,8 @@ import Markdown from "markdown-to-jsx";
 import { RouteComponentProps, Link } from "react-router-dom";
 import * as storyRepository from "../../DataAccess/storyRepository";
 import StoryData from "../../DataAccess/DTOs/StoryData";
+import Page from "../Page/Page";
+import StoryContext from "./StoryContext";
 
 interface StoryState {
   story: StoryData;
@@ -15,7 +17,12 @@ class Story extends Component<StoryProps, StoryState> {
   constructor(props: any) {
     super(props);
     this.state = {
-      story: { storyId: "", beginningPageId: "", title: "Loading...", description: "" }
+      story: {
+        storyId: "",
+        beginningPageId: "",
+        title: "Loading...",
+        description: ""
+      }
     };
   }
 
@@ -34,23 +41,33 @@ class Story extends Component<StoryProps, StoryState> {
       .catch((error: any) => console.log(error));
   };
 
-  render() {
+  StoryIntro = () => {
     const { title, description, beginningPageId } = this.state.story;
+    const storyId = this.props.match.params.storyId;
 
     return (
       <div className="Story">
         <h1>{title}</h1>
 
-        <Markdown options={{ forceBlock: true }}>
-          {description}
-        </Markdown>
+        <Markdown options={{ forceBlock: true }}>{description}</Markdown>
 
         <div className="choices">
-          <Link to={`/page/${beginningPageId}`}>
+          <Link to={`/story/${storyId}/${beginningPageId}`}>
             Start this story
           </Link>
         </div>
       </div>
+    );
+  };
+
+  render() {
+    const { StoryIntro } = this;
+    const { pageId, storyId } = this.props.match.params;
+
+    return (
+      <StoryContext.Provider value={{ story: this.state.story }}>
+        {pageId === undefined ? <StoryIntro /> : <Page pageId={pageId} />}
+      </StoryContext.Provider>
     );
   }
 }

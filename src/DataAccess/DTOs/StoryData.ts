@@ -14,7 +14,7 @@ export function MapToStoryData(doc: DocumentSnapshot): StoryData | undefined {
     return undefined;
   }
   return {
-    storyId: data.storyId,
+    storyId: doc.id,
     title: data.title,
     description: data.description,
     beginningPageId: data.beginningPageId
